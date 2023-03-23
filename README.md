@@ -21,5 +21,8 @@
 ### При раpработке был использован следующий стек технологий:
 Spring Boot, Hibernate, Spring Data JPA, H2 Database, Spring REST, RestTemplate, XChart<br>
 
-### Для запуска сервера:<br>
-`./mvnw spring-boot:run`
+### Запуск:<br>
+Сервер:<br>
+`mvn spring-boot:run`<br><br>
+Клиент:<br>
+`mvn compile exec:java -Dexec.mainClass="Consumer"`
