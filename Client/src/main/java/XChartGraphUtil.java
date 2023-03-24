@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 public class XChartGraphUtil {
-    public static void main(MeasurementGraphDTO measurements) {
+    public void drawGraph(MeasurementGraphDTO measurements) {
 
         XYChart chart = new XYChartBuilder().width(1920).height(1080)
                 .xAxisTitle("Дата").yAxisTitle("Температура").build();
