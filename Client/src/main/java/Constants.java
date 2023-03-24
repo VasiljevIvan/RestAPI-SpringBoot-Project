@@ -10,6 +10,6 @@ public class Constants {
             rdCount - Получить количество дождливых дней,
             showGraph - Получить график температур,
             exit - Выход
-            Введите команду:""";
+            Введите команду: """;
     public static final String nameMessage = "Введите имя датчика: ";
 }

@@ -3,9 +3,7 @@ import dto.*;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Client {
     private RestTemplate restTemplate;
@@ -15,51 +13,18 @@ public class Client {
     }
 
     public void run() {
-        String nameOfSensor;
         System.out.print(Constants.uiMessage);
         String inputStr = new Scanner(System.in).nextLine();
         while (!inputStr.equalsIgnoreCase("exit")) {
             try {
                 switch (inputStr) {
-                    case "reg" -> {
-                        System.out.print(Constants.nameMessage);
-                        nameOfSensor = new Scanner(System.in).nextLine();
-                        System.out.println(reg(nameOfSensor));
-                    }
-                    case "sensors" -> {
-                        SensorDTOList sensors = sensors();
-                        System.out.println(new Gson().toJson(sensors));
-                    }
-                    case "add" -> {
-                        System.out.print(Constants.nameMessage);
-                        nameOfSensor = new Scanner(System.in).nextLine();
-                        System.out.print("Введите температуру (-100 до 100): ");
-                        String value = new Scanner(System.in).nextLine();
-                        System.out.print("Введите 0 если нет дождя и 1 если есть: ");
-                        boolean isRaining = new Scanner(System.in).nextLine().equals("1");
-                        System.out.println(add(Double.parseDouble(value), isRaining, nameOfSensor));
-                    }
-                    case "addRandoms" -> {
-                        System.out.print(Constants.nameMessage);
-                        nameOfSensor = new Scanner(System.in).nextLine();
-                        System.out.print("Введите количество случайных замеров для добавления: ");
-                        int n = Integer.parseInt(new Scanner(System.in).nextLine());
-                        for (int i = 0; i < n; i++)
-                            System.out.println(
-                                    addRandoms((int) ((Math.random() * 20000) - 10000) / 100.0,
-                                            Math.random() < 0.5,
-                                            nameOfSensor));
-                    }
-                    case "get" -> {
-                        MeasurementDTOList measurements = get();
-                        System.out.println(new Gson().toJson(measurements));
-                    }
-                    case "rdCount" -> System.out.println(rdCount());
-                    case "showGraph" -> {
-                        MeasurementGraphDTO dateValue = showGraph();
-                        new XChartGraphUtil().drawGraph(dateValue);
-                        System.out.println("График температур сохранен в корне этого проекта \"Sample_Chart.png\"show");
-                    }
+                    case "reg" -> reg();
+                    case "sensors" -> sensors();
+                    case "add" -> add();
+                    case "addRandoms" -> addRandoms();
+                    case "get" -> get();
+                    case "rdCount" -> rdCount();
+                    case "showGraph" -> showGraph();
                     default -> System.out.println("Введена неверная команда");
                 }
             } catch (RuntimeException e) {
@@ -70,26 +35,42 @@ public class Client {
         }
     }
 
-    private String reg(String nameOfSensor) {
+    private void reg() {
+        System.out.print(Constants.nameMessage);
+        String nameOfSensor = new Scanner(System.in).nextLine();
         Map<String, String> jsonToSend = new HashMap<>();
         jsonToSend.put("name", nameOfSensor);
         HttpEntity<Map<String, String>> request = new HttpEntity<>(jsonToSend);
         String url = Constants.urlPrefix + "/sensors/registration";
-        return restTemplate.postForObject(url, request, String.class);
+        System.out.println(restTemplate.postForObject(url, request, String.class));
     }
 
-    private SensorDTOList sensors() {
-        return restTemplate.getForObject(Constants.urlPrefix + "/sensors", SensorDTOList.class);
+    private void sensors() {
+        System.out.println(new Gson().toJson(restTemplate.getForObject(Constants.urlPrefix + "/sensors", SensorDTOList.class)));
     }
 
-    private String add(Double value, Boolean raining, String nameOfSensor) {
-        HttpEntity<MeasurementDTO> request = createRequestToAdd(value, raining, nameOfSensor);
-        return restTemplate.postForObject(Constants.urlPrefix + "/measurements/add", request, String.class);
+    private void add() {
+        System.out.print(Constants.nameMessage);
+        String nameOfSensor = new Scanner(System.in).nextLine();
+        System.out.print("Введите температуру (-100 до 100): ");
+        String value = new Scanner(System.in).nextLine();
+        System.out.print("Введите 0 если нет дождя и 1 если есть: ");
+        boolean isRaining = new Scanner(System.in).nextLine().equals("1");
+        HttpEntity<MeasurementDTO> request = createRequestToAdd(Double.parseDouble(value), isRaining, nameOfSensor);
+        System.out.println(restTemplate.postForObject(Constants.urlPrefix + "/measurements/add", request, String.class));
     }
 
-    private String addRandoms(Double value, Boolean raining, String nameOfSensor) {
-        HttpEntity<MeasurementDTO> request = createRequestToAdd(value, raining, nameOfSensor);
-        return restTemplate.postForObject(Constants.urlPrefix + "/measurements/addwithrandomtime", request, String.class);
+    private void addRandoms() {
+        System.out.print(Constants.nameMessage);
+        String nameOfSensor = new Scanner(System.in).nextLine();
+        System.out.print("Введите количество случайных замеров для добавления: ");
+        int n = Integer.parseInt(new Scanner(System.in).nextLine());
+        for (int i = 0; i < n; i++) {
+            HttpEntity<MeasurementDTO> request = createRequestToAdd(
+                    (int) ((Math.random() * 20000) - 10000) / 100.0,
+                    Math.random() < 0.5, nameOfSensor);
+            System.out.println(restTemplate.postForObject(Constants.urlPrefix + "/measurements/addwithrandomtime", request, String.class));
+        }
     }
 
     private HttpEntity<MeasurementDTO> createRequestToAdd(Double value, Boolean raining, String nameOfSensor) {
@@ -102,15 +83,18 @@ public class Client {
         return new HttpEntity<>(measurementDTO);
     }
 
-    private MeasurementDTOList get() {
-        return restTemplate.getForObject(Constants.urlPrefix + "/measurements", MeasurementDTOList.class);
+    private void get() {
+        System.out.println(new Gson().toJson(restTemplate.getForObject(Constants.urlPrefix + "/measurements", MeasurementDTOList.class)));
     }
 
-    private String rdCount() {
-        return restTemplate.getForObject(Constants.urlPrefix + "/measurements/rainyDaysCount", String.class);
+    private void rdCount() {
+        System.out.println(restTemplate.getForObject(Constants.urlPrefix + "/measurements/rainyDaysCount", String.class));
     }
 
-    private MeasurementGraphDTO showGraph() {
-        return restTemplate.getForObject(Constants.urlPrefix + "/measurements/showGraph", MeasurementGraphDTO.class);
+    private void showGraph() {
+        new XChartGraphUtil().drawGraph(
+                Objects.requireNonNull(
+                        restTemplate.getForObject(Constants.urlPrefix + "/measurements/showGraph", MeasurementGraphDTO.class)));
+        System.out.println("График температур сохранен в корне этого проекта \"Sample_Chart.png\"show");
     }
 }
