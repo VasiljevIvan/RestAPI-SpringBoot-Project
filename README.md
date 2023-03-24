@@ -22,6 +22,11 @@
 Spring Boot, Hibernate, Spring Data JPA, H2 Database, Spring REST, RestTemplate, XChart<br>
 
 ### Запуск:<br>
+
+Для запуска потребуется:<br>
+-Maven<br>
+-Java 17<br>
+
 Сервер:<br>
 `mvn spring-boot:run`<br><br>
 Клиент:<br>
