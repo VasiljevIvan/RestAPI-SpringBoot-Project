@@ -4,3 +4,5 @@ Client/target/
 Controller/.idea/
 Controller/target/
 Controller/src/test/
+
+*.iml

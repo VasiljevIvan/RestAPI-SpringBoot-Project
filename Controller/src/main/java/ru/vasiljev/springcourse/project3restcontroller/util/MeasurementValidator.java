@@ -5,16 +5,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import ru.vasiljev.springcourse.project3restcontroller.models.Measurement;
+import ru.vasiljev.springcourse.project3restcontroller.repositories.SensorsRepository;
 import ru.vasiljev.springcourse.project3restcontroller.services.SensorsService;
 
 @Component
 public class MeasurementValidator implements Validator {
 
-    private final SensorsService sensorsService;
+    private final SensorsRepository sensorsRepository;
 
     @Autowired
-    public MeasurementValidator(SensorsService sensorsService) {
-        this.sensorsService = sensorsService;
+    public MeasurementValidator(SensorsRepository sensorsRepository) {
+        this.sensorsRepository = sensorsRepository;
     }
 
     @Override
@@ -26,10 +27,10 @@ public class MeasurementValidator implements Validator {
     public void validate(Object o, Errors errors) {
         Measurement measurement = (Measurement) o;
 
-        if(measurement.getSensor()==null)
+        if(measurement.getSensor().getName().equals(""))
             errors.rejectValue("sensor","","Поле sensor не может быть пустым");
 
-        if (sensorsService.findByName(measurement.getSensor().getName()).isEmpty())
+        if (sensorsRepository.findByName(measurement.getSensor().getName()).isEmpty())
             errors.rejectValue("sensor","","Сенсор не зарегистрирован в базе данных");
     }
 }

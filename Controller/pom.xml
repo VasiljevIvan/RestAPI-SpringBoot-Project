@@ -9,12 +9,12 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ru.vasiljev.springcourse</groupId>
-    <artifactId>Project3RestController</artifactId>
+    <artifactId>RestAPI-SpringBoot-Project-Controller</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Project3RestController</name>
-    <description>Project3RestController</description>
     <properties>
         <java.version>11</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
     <dependencies>
         <dependency>
